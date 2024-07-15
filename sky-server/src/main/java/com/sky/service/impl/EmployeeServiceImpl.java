@@ -1,17 +1,28 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
+import com.sky.exception.PasswordEditFailedException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -52,6 +63,69 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //3、返回实体对象
         return employee;
+    }
+
+
+    /**
+     * 添加员工
+     * @param employeeDTO
+     */
+    @Override
+    public void add(EmployeeDTO employeeDTO, Long empId) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        employee.setStatus(StatusConstant.ENABLE);
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setCreateUser(empId);
+        employee.setUpdateUser(empId);
+        employeeMapper.add(employee);
+    }
+
+    /**
+     * 分页查询员工
+     *
+     * @param employeePageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult getPages(EmployeePageQueryDTO employeePageQueryDTO) {
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+        Page<Employee> pages = employeeMapper.getPages(employeePageQueryDTO);
+        return new PageResult(employeePageQueryDTO.getPage(), pages);
+    }
+
+    /**
+     * 修改员工密码
+     * @param passwordEditDTO
+     * @return
+     */
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        Long id = passwordEditDTO.getEmpId();
+        Employee employee = employeeMapper.getById(id);
+        String oldPassword = passwordEditDTO.getOldPassword();
+        String newPassword = passwordEditDTO.getNewPassword();
+        if (!oldPassword.equals(employee.getPassword())){
+            throw new PasswordEditFailedException("原密码错误!");
+        }
+
+        if (oldPassword.equals(newPassword)){
+            throw new PasswordEditFailedException("密码相同!");
+        }
+        employee.setPassword(newPassword);
+        employee.setUpdateTime(LocalDateTime.now());
+        //TODO 更新updateUser
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据ID查询员工
+     */
+    @Override
+    public Employee getById(Long id) {
+        return employeeMapper.getById(id);
     }
 
 }
