@@ -44,7 +44,7 @@ public interface EmployeeMapper {
      * @param id
      * @return
      */
-    @Select("select * from employee where id_number = #{id}")
+    @Select("select * from employee where id = #{id}")
     Employee getById(Long id);
 
 
@@ -52,6 +52,6 @@ public interface EmployeeMapper {
      * 更新员工信息
      * @param employee
      */
-    @Update("update employee set password = #{password}, update_time = #{updateTime}, update_user = #{updateUser}")
+    // @Update("update employee set password = #{password}, update_time = #{updateTime}, update_user = #{updateUser}")
     void update(Employee employee);
 }

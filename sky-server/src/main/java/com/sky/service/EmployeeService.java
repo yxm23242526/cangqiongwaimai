@@ -33,9 +33,10 @@ public interface EmployeeService {
     /**
      * 修改密码
      * @param passwordEditDTO
+     * @param updateId
      * @return
      */
-    void editPassword(PasswordEditDTO passwordEditDTO);
+    void editPassword(PasswordEditDTO passwordEditDTO, Long updateId);
 
     /**
      * 根据ID查询员工
@@ -43,4 +44,18 @@ public interface EmployeeService {
      * @return
      */
     Employee getById(Long id);
+
+    /**
+     * 更新员工状态
+     * @param status
+     * @param id
+     */
+    void updateStatus(Integer status, Long id);
+
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     */
+    void update(EmployeeDTO employeeDTO);
 }

@@ -6,3 +6,11 @@ sky:
     database: sky_take_out
     username: root
     password: 123456
+
+  minio:
+    access-key: minioadmin
+    secret-key: minioadmin
+    endpoint: 47.102.128.67:9000
+    bucket: cangqiongwaimai
+    read-path: 47.102.128.67:9000
+

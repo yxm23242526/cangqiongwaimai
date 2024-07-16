@@ -99,15 +99,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * 修改员工密码
      * @param passwordEditDTO
+     * @param updateId 更新user
      * @return
      */
     @Override
-    public void editPassword(PasswordEditDTO passwordEditDTO) {
+    public void editPassword(PasswordEditDTO passwordEditDTO, Long updateId) {
         Long id = passwordEditDTO.getEmpId();
         Employee employee = employeeMapper.getById(id);
         String oldPassword = passwordEditDTO.getOldPassword();
         String newPassword = passwordEditDTO.getNewPassword();
-        if (!oldPassword.equals(employee.getPassword())){
+        if (employee != null && !oldPassword.equals(employee.getPassword())){
             throw new PasswordEditFailedException("原密码错误!");
         }
 
@@ -116,7 +117,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         employee.setPassword(newPassword);
         employee.setUpdateTime(LocalDateTime.now());
-        //TODO 更新updateUser
+        employee.setUpdateUser(updateId);
         employeeMapper.update(employee);
     }
 
@@ -126,6 +127,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee getById(Long id) {
         return employeeMapper.getById(id);
+    }
+
+
+    /**
+     * 更新状态
+     *
+     * @param status
+     */
+    @Override
+    public void updateStatus(Integer status, Long id) {
+        Employee employee = Employee.builder().status(status).id(id).build();
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     */
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employeeMapper.update(employee);
     }
 
 }

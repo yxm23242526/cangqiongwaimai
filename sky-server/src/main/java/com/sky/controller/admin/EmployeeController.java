@@ -104,8 +104,9 @@ public class EmployeeController {
      * @return
      */
     @PutMapping("/editPassword")
-    public Result<String> editPassword(@RequestBody PasswordEditDTO passwordEditDTO){
-        employeeService.editPassword(passwordEditDTO);
+    public Result<String> editPassword(@RequestBody PasswordEditDTO passwordEditDTO, HttpServletRequest request){
+        Long updateId = (Long) request.getAttribute("empId");
+        employeeService.editPassword(passwordEditDTO, updateId);
         return Result.success();
     }
 
@@ -118,5 +119,29 @@ public class EmployeeController {
     public Result<Employee> getById(@PathVariable("id") Long id){
         Employee employee = employeeService.getById(id);
         return Result.success(employee);
+    }
+
+
+    /**
+     * 更新员工状态
+     *
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public Result<Employee> updateStatus(@PathVariable("status") Integer status, Long id){
+        employeeService.updateStatus(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     * @return
+     */
+    @PutMapping
+    public Result<String> update(@RequestBody EmployeeDTO employeeDTO){
+        employeeService.update(employeeDTO);
+        return Result.success();
     }
 }
