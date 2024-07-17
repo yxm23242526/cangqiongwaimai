@@ -8,9 +8,9 @@ sky:
     password: 123456
 
   minio:
-    access-key: minioadmin
-    secret-key: minioadmin
-    endpoint: 47.102.128.67:9000
+    access-key: yxm
+    secret-key: yxm980918
+    endpoint: http://47.102.128.67:19000
     bucket: cangqiongwaimai
-    read-path: 47.102.128.67:9000
+    read-path: http://47.102.128.67:19000
 

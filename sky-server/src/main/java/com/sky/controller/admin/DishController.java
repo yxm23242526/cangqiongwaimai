@@ -7,10 +7,7 @@ import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin/dish")
@@ -37,8 +34,27 @@ public class DishController {
      * @param dishDTO
      * @return
      */
+    @PostMapping
     public Result<String> add(@RequestBody DishDTO dishDTO){
         dishService.add(dishDTO);
         return Result.success();
+    }
+
+
+    /**
+     * 修改菜品
+     * @param dishDTO
+     * @return
+     */
+    @PutMapping
+    public Result<String> update(@RequestBody DishDTO dishDTO){
+        dishService.update(dishDTO);
+        return Result.success();
+    }
+
+    @GetMapping("/{id}")
+    public Result<DishVO> getById(@PathVariable Long id) {
+        DishVO dishVO = dishService.getById(id);
+        return Result.success(dishVO);
     }
 }

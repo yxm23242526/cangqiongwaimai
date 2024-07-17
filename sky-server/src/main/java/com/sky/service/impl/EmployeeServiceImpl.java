@@ -108,10 +108,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeMapper.getById(id);
         String oldPassword = passwordEditDTO.getOldPassword();
         String newPassword = passwordEditDTO.getNewPassword();
-        if (employee != null && !oldPassword.equals(employee.getPassword())){
+        if (employee == null){
+            throw new AccountNotFoundException("没有此员工!");
+        }
+        if (!oldPassword.equals(employee.getPassword())){
             throw new PasswordEditFailedException("原密码错误!");
         }
-
         if (oldPassword.equals(newPassword)){
             throw new PasswordEditFailedException("密码相同!");
         }

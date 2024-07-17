@@ -38,3 +38,9 @@ sky:
     # 设置前端传递过来的令牌名称
     admin-token-name: token
 
+  minio:
+    access-key: ${sky.minio.access-key}
+    secret-key: ${sky.minio.secret-key}
+    endpoint: ${sky.minio.endpoint}
+    bucket: ${sky.minio.bucket}
+    read-path: ${sky.minio.read-path}

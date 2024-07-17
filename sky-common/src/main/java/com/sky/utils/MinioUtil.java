@@ -1,5 +1,6 @@
 package com.sky.utils;
 
+import com.sky.exception.BaseException;
 import com.sky.properties.MinIOConfig;
 import com.sky.properties.MinIOConfigProperties;
 import io.minio.MinioClient;
@@ -50,8 +51,8 @@ public class MinioUtil {
                     .build();
             minioClient.putObject(putObjectArgs);
             String readPath = minIOConfigProperties.getReadPath();
-            StringBuilder urlPath = new StringBuilder("http://" + InetAddress.getLocalHost().getHostAddress());
-            urlPath.append(readPath.substring(readPath.lastIndexOf(":")));
+            StringBuilder urlPath = new StringBuilder(readPath);
+          //  urlPath.append(readPath.substring(readPath.lastIndexOf(":")));
             urlPath.append(separator + minIOConfigProperties.getBucket());
             urlPath.append(separator);
             urlPath.append(filePath);
@@ -59,7 +60,7 @@ public class MinioUtil {
         }
         catch (Exception ex)
         {
-            throw new RuntimeException("上传文件失败");
+            throw new BaseException("上传文件失败");
         }
     }
 
