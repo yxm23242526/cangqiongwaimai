@@ -17,7 +17,7 @@ import java.net.InetAddress;
 
 @EnableConfigurationProperties(MinIOConfigProperties.class)
 @Import(MinIOConfig.class)
-@Component
+@Service
 public class MinioUtil {
 
     @Autowired

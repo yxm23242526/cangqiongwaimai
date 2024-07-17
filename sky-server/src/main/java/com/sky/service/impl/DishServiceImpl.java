@@ -7,9 +7,11 @@ import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.utils.MinioUtil;
 import com.sky.vo.DishVO;
@@ -29,6 +31,7 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
+
     /**
      * 分页查询菜品
      *
@@ -37,7 +40,7 @@ public class DishServiceImpl implements DishService {
     @Override
     public PageResult queryPage(DishPageQueryDTO dishPageQueryDTO) {
         PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
-        Page<Dish> page = dishMapper.pageQuery(dishPageQueryDTO);
+        Page<DishVO> page = dishMapper.pageQuery(dishPageQueryDTO);
         return new PageResult(page.getTotal(), page.getResult());
     }
 
@@ -47,7 +50,19 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public void add(DishDTO dishDTO) {
-        //minioUtil.uploadImgFile("dish", UUID.randomUUID(), )
+        Long currentId = BaseContext.getCurrentId();
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dish.setUpdateUser(currentId);
+        dish.setUpdateTime(LocalDateTime.now());
+        dish.setCreateUser(currentId);
+        dish.setCreateTime(LocalDateTime.now());
+        dishMapper.insert(dish);
+
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        if (flavors != null && !flavors.isEmpty()){
+            dishFlavorMapper.update(flavors, dish.getId());
+        }
     }
 
     /**
@@ -62,10 +77,12 @@ public class DishServiceImpl implements DishService {
         dish.setUpdateUser(currentId);
         dish.setUpdateTime(LocalDateTime.now());
         dishMapper.update(dish);
+        //更新前需要把flavor以前绑定的数据删除
+        dishFlavorMapper.deleteById(dishDTO.getId());
         List<DishFlavor> flavors = dishDTO.getFlavors();
-        // flavors.forEach(flavor -> flavor.setDishId(dishDTO.getId()));
-        // dishFlavorMapper.add2(flavors);
-        dishFlavorMapper.update(flavors, dishDTO.getId());
+        if (flavors != null && !flavors.isEmpty()){
+            dishFlavorMapper.update(flavors, dishDTO.getId());
+        }
     }
 
     /**
@@ -81,5 +98,37 @@ public class DishServiceImpl implements DishService {
         List<DishFlavor> dishFlavors = dishFlavorMapper.getByDishId(id);
         dishVO.setFlavors(dishFlavors);
         return dishVO;
+    }
+
+
+    /**
+     * 批量删除菜品
+     * @param ids
+     */
+    public void delete(List<Long> ids) {
+        dishMapper.delete(ids);
+    }
+
+
+    /**
+     * 更新菜品状态
+     * @param status
+     * @param id
+     */
+    @Override
+    public void updateStatus(int status, Long id) {
+        Dish dish = Dish.builder().status(status).id(id).build();
+        dishMapper.update(dish);
+    }
+
+    /**
+     * 获取菜品列表
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<Dish> list(Integer categoryId) {
+        List<Dish> list = dishMapper.list(categoryId);
+        return list;
     }
 }
