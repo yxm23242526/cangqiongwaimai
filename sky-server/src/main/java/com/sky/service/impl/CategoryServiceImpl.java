@@ -1,11 +1,15 @@
 package com.sky.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.annotation.AutoFill;
 import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.enumeration.OperationType;
 import com.sky.mapper.CategoryMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
@@ -18,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
 
 
     @Autowired
@@ -73,14 +77,8 @@ public class CategoryServiceImpl implements CategoryService {
      * @param categoryDTO
      */
     @Override
-    public void addType(CategoryDTO categoryDTO) {
-        Long currentId = BaseContext.getCurrentId();
-        Category category = new Category();
-        BeanUtils.copyProperties(categoryDTO, category);
-        category.setCreateTime(LocalDateTime.now());
-        category.setUpdateTime(LocalDateTime.now());
-        category.setCreateUser(currentId);
-        category.setUpdateUser(currentId);
+    @AutoFill(value = OperationType.INSERT)
+    public void addType(Category category) {
         categoryMapper.add(category);
     }
 
@@ -92,6 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     //TODO
     public List<Category> queryByType(Integer type) {
+        // List<Category> categories = categoryMapper.selectList();
         return categoryMapper.queryByType(type);
     }
 }

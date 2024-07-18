@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.pagehelper.Page;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
@@ -11,11 +12,9 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 @Mapper
-public interface SetMealMapper {
+public interface SetMealMapper extends BaseMapper<Setmeal> {
 
     Page<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
-
-    void insert(Setmeal setmeal);
 
     void delete(List<Long> ids);
 

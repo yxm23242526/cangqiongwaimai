@@ -14,3 +14,10 @@ sky:
     bucket: cangqiongwaimai
     read-path: http://47.102.128.67:19000
 
+  redis:
+    host: 47.102.128.67
+    port: 6379
+    database: 10
+
+
+

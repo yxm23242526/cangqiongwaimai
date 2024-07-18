@@ -31,6 +31,8 @@
         <jaxb-api>2.3.1</jaxb-api>
         <poi>3.16</poi>
         <minio>8.5.4</minio>
+        <mybatis-plus>3.4.2</mybatis-plus>
+        <redis>3.3.1</redis>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -38,6 +40,14 @@
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis.spring}</version>
+            </dependency>
+
+
+            <!--mybatis-plus-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus}</version>
             </dependency>
 
             <dependency>
@@ -129,6 +139,13 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio}</version>
+            </dependency>
+
+            <!--redis-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${redis}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

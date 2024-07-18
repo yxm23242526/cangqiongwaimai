@@ -1,12 +1,17 @@
 package com.sky.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.context.BaseContext;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.SetMealDishMapper;
 import com.sky.mapper.SetMealMapper;
 import com.sky.result.PageResult;
@@ -21,7 +26,7 @@ import java.util.List;
 
 
 @Service
-public class SetMealServiceImpl implements SetMealService {
+public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, Setmeal>  implements SetMealService {
 
     @Autowired
     private SetMealMapper setmealMapper;
@@ -74,6 +79,11 @@ public class SetMealServiceImpl implements SetMealService {
         setmealMapper.update(setmeal);
     }
 
+    /**
+     * 根据ID查询套餐
+     * @param id
+     * @return
+     */
     @Override
     public SetmealVO queryById(Long id) {
         Setmeal setmeal = setmealMapper.queryById(id);
@@ -91,6 +101,13 @@ public class SetMealServiceImpl implements SetMealService {
     public void updateSetmeal(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
+        setmealMapper.updateById(setmeal);
+        setmealDishMapper.delete(new LambdaQueryWrapper<SetmealDish>().eq(SetmealDish::getSetmealId, setmeal.getId()));
 
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        setmealDishes.forEach(setmealDish -> {
+            setmealDish.setSetmealId(setmeal.getId());
+            setmealDishMapper.insert(setmealDish);
+        });
     }
 }

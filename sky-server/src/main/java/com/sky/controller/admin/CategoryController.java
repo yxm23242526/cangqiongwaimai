@@ -8,6 +8,7 @@ import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
 import org.apache.ibatis.annotations.Delete;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,7 +65,9 @@ public class CategoryController {
      */
     @PostMapping
     public Result<String> addType(@RequestBody CategoryDTO categoryDTO){
-        categoryService.addType(categoryDTO);
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryDTO, category);
+        categoryService.addType(category);
         return Result.success();
     }
 

@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
@@ -25,7 +26,7 @@ import org.springframework.util.DigestUtils;
 import java.time.LocalDateTime;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;

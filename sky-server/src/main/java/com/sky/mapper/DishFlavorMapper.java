@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sky.entity.DishFlavor;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 @Mapper
-public interface DishFlavorMapper {
+public interface DishFlavorMapper extends BaseMapper<DishFlavor> {
 
     void update(@Param("flavors") List<DishFlavor> flavors,@Param("dishId") Long id);
 

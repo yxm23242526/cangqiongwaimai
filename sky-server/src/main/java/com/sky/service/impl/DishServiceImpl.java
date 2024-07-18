@@ -1,12 +1,15 @@
 package com.sky.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.annotation.AutoFill;
 import com.sky.context.BaseContext;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.enumeration.OperationType;
 import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
@@ -24,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class DishServiceImpl implements DishService {
+public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements DishService {
 
     @Autowired
     private DishMapper dishMapper;
@@ -81,7 +84,7 @@ public class DishServiceImpl implements DishService {
         dishFlavorMapper.deleteById(dishDTO.getId());
         List<DishFlavor> flavors = dishDTO.getFlavors();
         if (flavors != null && !flavors.isEmpty()){
-            dishFlavorMapper.update(flavors, dishDTO.getId());
+            dishFlavorMapper.update(flavors, dish.getId());
         }
     }
 
