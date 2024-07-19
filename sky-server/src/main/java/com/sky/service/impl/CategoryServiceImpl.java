@@ -88,9 +88,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return
      */
     @Override
-    //TODO
     public List<Category> queryByType(Integer type) {
-        // List<Category> categories = categoryMapper.selectList();
-        return categoryMapper.queryByType(type);
+        List<Category> categories = categoryMapper.queryByType(type);
+        return categories;
     }
 }
