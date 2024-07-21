@@ -22,6 +22,13 @@ sky:
   wechat:
     appid: wx7c01f92a8aa18010
     secret: 11a6bf42f8ba5ff581ff38f92e3d4e14
+    mchid: 12345678
+    mch-serial-no: FAKENUMBER
+    private-key-file-path: D:\pay\fakepath.pem
+    api-v3-key: FAKEKEY
+    we-chat-pay-cert-file-path:
+    notify-url: https://localhost:8080/notify/paySuccess
+    refund-notify-url: https://localhost:8080/notify/refundSuccess
 
 
 
