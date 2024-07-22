@@ -10,6 +10,7 @@ import com.sky.result.Result;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 
 public interface OrderService extends IService<Orders> {
     PageResult conditionSearchOrders(OrdersPageQueryDTO ordersPageQueryDTO);
@@ -30,4 +31,8 @@ public interface OrderService extends IService<Orders> {
      * @param outTradeNo
      */
     void paySuccess(String outTradeNo);
+
+    void reminder(Long id);
+
+    OrderVO getDetailsById(Long id);
 }

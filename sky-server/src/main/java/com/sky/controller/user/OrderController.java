@@ -28,13 +28,19 @@ public class OrderController {
      * @return
      */
     @PostMapping("/submit")
-    private Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO){
+    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO){
         return Result.success(orderService.submit(ordersSubmitDTO));
     }
 
     @PutMapping("/payment")
-    private Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception{
+    public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception{
         log.info("小程序支付");
         return Result.success(orderService.payment(ordersPaymentDTO));
+    }
+
+    @GetMapping("/reminder/{id}")
+    public Result reminder(@PathVariable("id") Long id){
+        orderService.reminder(id);
+        return Result.success();
     }
 }

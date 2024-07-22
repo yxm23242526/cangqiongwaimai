@@ -28,6 +28,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,21 +49,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     @Autowired
     private OrderMapper orderMapper;
-
     @Autowired
     private OrderDetailMapper orderDetailMapper;
-
     @Autowired
     private AddressBookMapper addressBookMapper;
-
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
-
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired
+    private WebSocketServer webSocketServer;
     /**
      * 订单搜索
      * @param ordersPageQueryDTO
@@ -190,7 +188,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     public void paySuccess(String outTradeNo) {
 
         // 根据订单号查询订单
-        Orders ordersDB = orderMapper.selectById(outTradeNo);
+        Orders ordersDB = orderMapper.selectOne(new LambdaQueryWrapper<Orders>()
+                .eq(Orders::getNumber, outTradeNo));
 
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
         Orders orders = Orders.builder()
@@ -199,7 +198,44 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
                 .payStatus(Orders.PAID)
                 .checkoutTime(LocalDateTime.now())
                 .build();
-
         orderMapper.updateById(orders);
+
+
+        Map map = new HashMap<>();
+        map.put("type", 1);//1表示来单提醒 2表示催单
+        map.put("orderId", ordersDB.getId());
+        map.put("content", "订单号：" + outTradeNo);
+        String jsonString = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(jsonString);
+    }
+
+
+    /**
+     * 客户催单
+     * @param id
+     */
+    @Override
+    public void reminder(Long id) {
+        Orders ordersDB = orderMapper.selectById(id);
+        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)){
+            throw new OrderBusinessException("催单的单不存在");
+        }
+        Map map = new HashMap<>();
+        map.put("type", 2);//1表示来单提醒 2表示催单
+        map.put("orderId", ordersDB.getId());
+        map.put("content", "订单号：" + ordersDB.getNumber());
+        String jsonString = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(jsonString);
+    }
+
+
+    /**
+     * 根据id查询订单详情
+     * @param id
+     * @return
+     */
+    @Override
+    public OrderVO getDetailsById(Long id) {
+        return null;
     }
 }
